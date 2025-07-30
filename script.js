@@ -1,78 +1,90 @@
+const result = document.querySelector("#result");
+const computerChoiceVal = document.getElementById("computer-chose-val");
+const choiceBtn = document.querySelectorAll(".choice-btn");
+const humanScoreVal = document.getElementById("human-score-val");
+const computerScoreVal = document.getElementById("computer-score-val");
+const buttons = document.getElementById("buttons");
+const body = document.body;
+let humanChoice;
+let computerChoice;
+let humanScore = 0;
+let computerScore = 0;
 
-function getComputerChoice() {
-  let CCNum = Math.floor(Math.random() * 3) + 1;
-  if (CCNum == 1) {
-    return "rock";
-  }
-  else if (CCNum == 2) {
-    return "paper";
-  }
-  else {
-    return "scissors";
+
+choiceBtn.forEach(button => button.addEventListener("click", () => {
+  humanChoice = button.textContent;
+  getComputerChoice();
+  computerChoiceVal.textContent = computerChoice;
+  result.textContent = playRound();
+  humanScoreVal.textContent = humanScore;
+  computerScoreVal.textContent = computerScore;
+  playGame();
+}));
+
+
+function getComputerChoice(){
+  const CCNum = Math.floor(Math.random() * 3) + 1;
+  switch(CCNum){
+    case 1:
+      computerChoice = "rock";
+      break;
+    case 2:
+      computerChoice = "paper";
+      break;
+    case 3:
+      computerChoice = "scissors";
+      break;
   }
 }
 
 
-function getHumanChoice() {
-  let HCNum = prompt("Rock, paper or scissors?");
-
-  if (HCNum.toLowerCase() === "rock") {
-    return "rock";
-  } else if (HCNum.toLowerCase() === "paper") {
-    return "paper";
-  } else if (HCNum.toLowerCase() === "scissors") {
-    return "scissors";
-  }
-};
-
-
-function playRound(humanChoice, computerChoice) {
+function playRound(){
   if (humanChoice == computerChoice) {
-    console.log("It's a tie!");
-    return;
+    return "It's a tie!";
+  } 
+    else if(computerChoice == "rock"){
+      if(humanChoice == "paper"){
+        humanScore++;
+        return "Victory!";
+      }
+        else if(humanChoice == "scissors"){
+          computerScore++;
+          return "Defeat!";
+        }
+  } 
+    else if(computerChoice == "paper"){
+      if(humanChoice == "scissors"){
+        humanScore++;
+        return "Victory!";
+      }
+        else if(humanChoice == "rock"){
+          computerScore++;
+          return "Defeat!";
+        }
   }
-  if (humanChoice == "rock") {
-    switch (computerChoice) {
-        case "paper":
-            console.log("Defeat!");
-            computerScore ++;
-            break;
-        default:
-            console.log("Victory!");
-            humanScore ++;
-    }
-  } else if (humanChoice == "paper") {
-    switch (computerChoice) {
-        case "rock":
-            console.log("Victory!");
-            humanScore ++;
-            break;
-        default:
-            console.log("Defeat!");
-            computerScore ++;
-    }
-  } else if (humanChoice == "scissors") {
-    switch (computerChoice) {
-        case "rock":
-            console.log("Defeat!");
-            computerScore ++;
-            break;
-        default:
-            console.log("Victory!");
-            humanScore ++;
-    }
+    else if(computerChoice == "scissors"){
+      if(humanChoice == "rock"){
+        humanScore++;
+        return "Victory!";
+      }
+        else if(humanChoice == "paper"){
+          computerScore++;
+          return "Defeat!";
+        }
   }
 }
 
 function playGame(){
-    for (let i=0; i<5; i++){
-        let computerChoice=getComputerChoice();
-        let humanChoice = getHumanChoice();
-        playRound(humanChoice,computerChoice);
-        console.log('Computer:',computerChoice,'You:',humanChoice,'\nComputer score:',computerScore,'Your score:',humanScore);
-    }
-}
+   if (humanScore === 5 || computerScore === 5){
+    const victor = humanScore == 5 ? "Game Over. ULTIMATE VICTORY!" : "Game Over. ULTIMATE DEFEAT!"
+    result.textContent = victor;
+    buttons.style.display = "none";
 
-let humanScore = 0;
-let computerScore = 0;
-playGame();
+    const replay = document.createElement("button");
+    replay.textContent = "Play again";
+    body.appendChild(replay);
+    replay.addEventListener("click", () => {
+      location.reload();
+    })
+   }
+}
